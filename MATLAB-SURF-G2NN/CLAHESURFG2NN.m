@@ -181,7 +181,6 @@ function result = CLAHESURFG2NN()
     else  num_gt=0; %暂加
     end  %暂加
     end
-    
     if(plotimg==1)
     % tampering detection
     if(num_gt)
@@ -191,6 +190,10 @@ function result = CLAHESURFG2NN()
     end
     end
     fprintf(2,'检测用时%f秒\n',toc);
-    result = toc;
+    result.pixel1 = p1;
+    result.pixel2 = p2;
+    result.point_get = N1;
+    result.is_tampered = num_gt;
+    result.cost_time = toc;
     
     
