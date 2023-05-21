@@ -11,17 +11,19 @@ def draw_regions(img, pos1, pos2, regions = 0, flag = False, flag_point = False,
     draw = ImageDraw.Draw(new_img)
     # 使用for循环，遍历篡改区域列表中的每个区域
 
-
+    # 检测获取到的扫描区域是否存在
     if regions != 0:
         for region in regions:
+                #将扫描的区域填上颜色
                 pixel_positions = np.array(region)
                 for pixel_position in pixel_positions:
                     x = pixel_position[0]
                     y = pixel_position[1]
                     rgb = new_img.getpixel((x,y))
+                    #是否填充白色像素
                     if flag:
                         new_img.putpixel((x,y), (255, 255, 255))
-
+                    #填充黑白滤镜
                     else:
                         gray = int(0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2])
                         new_img.putpixel((x,y), (gray, gray, gray))

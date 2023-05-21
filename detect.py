@@ -1,3 +1,4 @@
+# 用于处理分数计算
 def detect_score(img, regions):
     #获取图像数据
     width, height = img.size
