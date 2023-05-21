@@ -1,12 +1,14 @@
-function result = CLAHESURFG2NN()
+function result = CLAHESURFG2NN(file_name, file_path)
     %%%%%%%%%%%%本算法：用SURF算法进行特征提取，采用聚类和G2NN算法进行匹配，可检测多重复制粘贴篡改问题
     % 去掉二次聚类
     %clc;
-    clear all;
+    % clear all;
     tic
-    [filename,pathname]=...
-        uigetfile({'*.png';'*.bmp';'*.jpg';'*.gif';},'');
-    str=[pathname,filename];
+    % [filename,pathname]=...
+    %     uigetfile({'*.png';'*.bmp';'*.jpg';'*.gif';},'');
+    % filename = file_name;
+    pathname = file_path;
+    str=[pathname];
     x=imread(str);
     I1=x;
     % % % % % % % % % % % % % % 
@@ -67,7 +69,7 @@ function result = CLAHESURFG2NN()
          
      if (plotimg==1)
             figure
-            imshow(I1);
+            % imshow(I1);
             N1=size(p1,2);
             fprintf('初始匹配点数%d \n',N1);
             hold on
@@ -121,15 +123,15 @@ function result = CLAHESURFG2NN()
         end
      
       figure;  %经过一次聚类和ransac消除误配后的再次聚类图（写在此处是为了考虑X1为空的情况能显示原图）
-      imshow(I1); hold on;
+    %   imshow(I1); hold on;
     if size(X1,1)>0 %       
         % Hierarchical Agglomerative Clustering
         Y=pdist(X1);
         Z1 = linkage(Y,metric);
          T1 = cluster(Z1,'cutoff',thc1,'Criterion','distance');   
-        for i=1:size(pos1,1)
-            plot([pos1(i,1)  pos2(i,1)],[pos1(i,2)  pos2(i,2)],'-','color','c');
-        end  
+        % for i=1:size(pos1,1)
+        %     plot([pos1(i,1)  pos2(i,1)],[pos1(i,2)  pos2(i,2)],'-','color','c');
+        % end  
          gscatter(X1(:,1),X1(:,2),T1,'','','','off')   
         N1=size(pos1,1);
          fprintf('最终找到%d个匹配点\n',N1);
@@ -163,7 +165,7 @@ function result = CLAHESURFG2NN()
       end
       thc2=30;
          figure; %先显示原图，若X2有值，则此图为最终匹配对；若无值，则此图为原始图像，表误匹配全消除 
-         imshow(I1);  xlabel('本文算法'); hold on;
+        %  imshow(I1);  xlabel('本文算法'); hold on;
         if X2>0
            % Hierarchical Agglomerative Clustering
            Y2=pdist(X2);
@@ -171,9 +173,9 @@ function result = CLAHESURFG2NN()
            T2 = cluster(Z2,'cutoff',thc2,'Criterion','distance');
          N2=size(pos3,1);
          fprintf('最终找到%d个匹配点\n',N2);
-            for i=1:N2
-               plot([pos3(i,1)  pos4(i,1)],[pos3(i,2)  pos4(i,2)],'-','color','c');
-            end 
+            % for i=1:N2
+            %    plot([pos3(i,1)  pos4(i,1)],[pos3(i,2)  pos4(i,2)],'-','color','c');
+            % end 
              gscatter(X2(:,1),X2(:,2),T2,'','','','off') ;
         else  num_gt=0; 
         end
@@ -190,10 +192,16 @@ function result = CLAHESURFG2NN()
     end
     end
     fprintf(2,'检测用时%f秒\n',toc);
+    fprintf(str)
     result.pixel1 = p1;
     result.pixel2 = p2;
-    result.point_get = N1;
+    if(p1)
+        result.point_get = N1;
+    else
+        result.point_get = 0;
+    end
     result.is_tampered = num_gt;
     result.cost_time = toc;
+    result.locs = locs;
     
     
